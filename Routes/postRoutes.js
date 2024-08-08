@@ -12,7 +12,7 @@ const {
   newLike,
   getPostPerById,
 } = require("../Controller/Post/PostController");
-const { protectingRoutes } = require("../Controller/AuthController");
+const { protectingRoutes } = require("../Controller/authController");
 
 const router = express();
 

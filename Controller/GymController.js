@@ -16,6 +16,7 @@ app.get("/api/gyms", async (req, res) => {
         latitude: venue.location.lat,
         longitude: venue.location.lng,
       }));
+      console.log({ gyms, latitude, longitude });
       res.json(gyms);
     })
     .catch((err) => {

@@ -1,6 +1,6 @@
 const express = require("express");
 require("dotenv").config();
-const globalerrorHandler = require("./Error-Handling/globalErrorHandler");
+const globalErrorHandler = require("./Error-Handling/globalErrorHandler");
 const userRoutes = require("./Routes/userRoutes");
 const { connectDB } = require("./Database/conn");
 const AppError = require("./Error-Handling/error");
@@ -40,8 +40,8 @@ app.all("*", (req, res, next) => {
   );
 });
 
-app.use(globalerrorHandler);
+app.use(globalErrorHandler);
 
-app.listen(process.env.PORT, () => {
+app.listen(process.env.PORT || 8000, () => {
   console.log(`Server Connected on port: ${process.env.PORT}`);
 });

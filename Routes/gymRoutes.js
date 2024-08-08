@@ -13,7 +13,7 @@ router.get("/:latitude/:longitude", async (req, res) => {
       radius: 10000,
     })
     .then(({ data }) => {
-      console.log(data?.results);
+      console.log({ results: data?.results });
       res.json(data?.results);
     })
     .catch((err) => {

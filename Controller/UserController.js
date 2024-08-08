@@ -22,6 +22,7 @@ const registerUser = catchAsync(async (req, res, next) => {
     const photo = response.data.picture;
 
     const userFind = await User.find({ email });
+    
     if (userFind.length === 0) {
       const user = await User.create({
         name,
@@ -145,6 +146,7 @@ const updateuserDetail = catchAsync(async (req, res, next) => {
     return next(new AppError(error));
   }
 });
+
 const getUserById = catchAsync(async (req, res, next) => {
   const user = await User.findById(req.params.id).populate("posts");
   if (user) {

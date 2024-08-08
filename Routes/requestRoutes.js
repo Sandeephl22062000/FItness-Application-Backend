@@ -1,6 +1,6 @@
 const express = require("express");
-const { protectingRoutes } = require("../Controller/AuthController");
-const RequestController = require("../Controller/RequestController");
+const { protectingRoutes } = require("../Controller/authController");
+const RequestController = require("../Controller/requestController");
 const router = express.Router();
 router.post(
   "/getclientsrequest",

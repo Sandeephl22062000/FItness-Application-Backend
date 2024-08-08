@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const TrainerController = require("../Controller/TrainerController/trainerController");
 const serviceController = require("../Controller/servicesController");
-const { protectingRoutes } = require("../Controller/AuthController");
+const { protectingRoutes } = require("../Controller/authController");
 
 router.route("/virtualtrainer").post(TrainerController.virtualTrainer);
 

@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const catchAsync = require("../utils/catchAync");
 const User = require("../Model/UserModel");
 const AppError = require("../Error-Handling/error");
+
 const protectingRoutes = catchAsync(async (req, res, next) => {
   const token = req.headers.authorization.split(" ");
   const jwtToken = token[1].toString();
