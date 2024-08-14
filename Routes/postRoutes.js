@@ -11,6 +11,7 @@ const {
   getPostDetails,
   newLike,
   getPostPerById,
+  uploadImage,
 } = require("../Controller/Post/PostController");
 const { protectingRoutes } = require("../Controller/authController");
 
@@ -20,7 +21,7 @@ router.route("/commentpost/:postID").post(protectingRoutes, newComment);
 
 router.route("/likepost/:postID").post(protectingRoutes, newLike);
 
-router.route("/new").post(protectingRoutes, newPost);
+router.route("/new").post(protectingRoutes, uploadImage, newPost);
 
 router.route("/posts/all").get(allPosts);
 

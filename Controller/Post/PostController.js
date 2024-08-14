@@ -2,21 +2,57 @@ const Post = require("../../Model/PostModel/PostModel");
 const User = require("../../Model/UserModel");
 const catchAsync = require("../../utils/catchAync");
 const AppError = require("../../Error-Handling/error");
-const mongoose = require("mongoose");
+const multer = require("multer");
+const { s3client } = require("../../Database/s3config");
+const { getSignedUrl } = require("@aws-sdk/s3-request-presigner");
+const { PutObjectCommand, GetObjectCommand } = require("@aws-sdk/client-s3");
+const axios = require("axios");
+
+const upload = multer({
+  storage: multer.memoryStorage(),
+  limits: { fileSize: 20 * 1024 * 1024 },
+});
+
+exports.uploadImage = upload.single("file");
 
 exports.newPost = catchAsync(async (req, res, next) => {
+  const { file, body } = req;
+  const { caption } = body;
+
+  if (!file) {
+    return next(new AppError("File is required", 400));
+  }
+
+  const fileName = `uploads/images/${
+    Date.now().toString() + "-" + file.originalname
+  }`;
+
+  const params = {
+    Bucket: process.env.S3_BUCKET_NAME,
+    Key: fileName,
+    ContentType: file.mimetype,
+  };
+
+  const command = new PutObjectCommand(params);
+  const signedUrl = await getSignedUrl(s3client, command);
+
+  await axios.put(signedUrl, file.buffer, {
+    headers: {
+      "Content-Type": file.mimetype,
+      "Content-Length": file.size,
+    },
+  });
+
   const postData = {
-    caption: req.body.caption,
-    image: req.body.image,
-    video: req.body.video,
+    caption,
+    fileName,
+    fileType: file.mimetype,
     postedBy: req.user._id,
   };
 
   const post = await Post.create(postData);
   const user = await User.findById(req.user._id);
-  console.log(post, user, "vadfdv", postData, "tbhrtgsrtd");
   user.posts.push(post._id);
-  console.log("post created");
   await user.save();
 
   if (post) {
@@ -160,7 +196,28 @@ exports.allPosts = catchAsync(async (req, res, next) => {
     })
     .sort({ createdAt: -1 });
 
+  const getObjectUrl = async (key) => {
+    const command = new GetObjectCommand({
+      Bucket: "privatebucketforproject",
+      Key: key,
+    });
+    const url = await getSignedUrl(s3client, command);
+    return url;
+  };
+
+  const updatedPosts = await Promise.all(
+    posts.map(async (post) => {
+      const signedUrl = await getObjectUrl(post.fileName);
+      return {
+        ...post.toObject(),
+        signedUrl,
+      };
+    })
+  );
+
+  console.log({ updatedPosts });
+
   return res.status(200).json({
-    posts,
+    posts: updatedPosts,
   });
 });

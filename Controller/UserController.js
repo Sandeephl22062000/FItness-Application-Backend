@@ -78,7 +78,7 @@ const registerUser = catchAsync(async (req, res, next) => {
     });
 
     if (user) {
-      res.json({
+      res.status(200).json({
         message: "Successfully register",
       });
     } else {
@@ -199,7 +199,7 @@ const loginUser = catchAsync(async (req, res, next) => {
         UserInfo.password
       );
       if (!PasswordChecking)
-        return next(new AppError("Please provide Correct Password", 401));
+        return next(new AppError("Incorrect password", 401));
 
       const token = jwt.sign({ id: UserInfo._id }, process.env.SECRET_KEY);
       if (UserInfo) {

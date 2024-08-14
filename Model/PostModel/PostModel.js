@@ -6,10 +6,10 @@ const postSchema = new mongoose.Schema(
       type: String,
       trim: true,
     },
-    image: {
+    fileName: {
       type: String,
     },
-    video: {
+    fileType: {
       type: String,
     },
     postedBy: {
